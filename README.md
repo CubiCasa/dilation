@@ -1,3 +1,54 @@
+# CUBICASA Instructions
+
+## Installation
+
+* Installation of Caffe can be very painful, so if doing this from scratch:
+
+1) start with the [Caffe Docker image](https://github.com/BVLC/caffe/tree/master/docker)
+
+```bash
+nvidia-docker run -ti bvlc/caffe:gpu caffe
+```
+
+2) Install Anaconda 2.xx for the image (check the up-to-date [installer path](https://www.continuum.io/downloads))
+
+```bash
+wget https://repo.continuum.io/archive/Anaconda2-4.3.0-Linux-x86_64.sh
+chmod +x Anaconda2-4.3.0-Linux-x86_64.sh 
+./Anaconda2-4.3.0-Linux-x86_64.sh 
+source /root/.bashrc
+```
+
+3) Install dilation dependencies 'conda install numba numpy opencv' 
+
+```bash
+conda install numba numpy opencv
+```
+
+You will hit probably this error first:
+
+```python
+ImportError: /root/anaconda2/bin/../lib/libstdc++.so.6: version `GLIBCXX_3.4.21' not found (required by /opt/caffe/python/caffe/_caffe.so)
+```
+
+Which can be fixed with:
+
+```bash
+ conda install libgcc
+```
+
+This is followed by this protobuf error:
+
+```python
+ImportError: No module named google.protobuf.internal
+```
+
+Which can be again fixed with:
+
+```bash
+ conda install protobuf
+```
+
 # Multi-Scale Context Aggregation by Dilated Convolutions
 
 ## Introduction
