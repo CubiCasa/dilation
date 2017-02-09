@@ -6,9 +6,11 @@ Properties of dilated convolution are discussed in our [ICLR 2016 conference pap
 
 # CUBICASA Instructions
 
-## Installation
+Installation of Caffe can be very painful, so if you want to everything from scratch (or have to for some reason). Follow the instructions to get the prediction and training working.
 
-* Installation of Caffe can be very painful, so if doing this from scratch:
+Otherwise just skip all this hassle, and get the readymade Docker image.
+
+## Installation for the prediction
 
 1) start with the [Caffe Docker image](https://github.com/BVLC/caffe/tree/master/docker)
 
@@ -56,17 +58,47 @@ Which can be again fixed with:
  conda install protobuf
 ```
 
-## Usage
+## Install another Caffe for training
 
-### Test that prediction works with the example image
+Refer to the [document for training](docs/training.md). Now more Caffe fun to come, as we need to clone the forked Caffe of the dilation authors. Note, that we have double Caffe in the docker now hogging up space, and building with [cmake](http://caffe.berkeleyvision.org/installation.html) did not work so you need to modify the `Makefile.config`: 
+
+1) So that PYTHON_INCLUDE refers to the ANACONDA python located in `/root/anaconda2/`
+2) HDF5 libary need to be linked later
+`INCLUDE_DIRS := $(PYTHON_INCLUDE) /usr/local/include /usr/include/hdf5/serial`
+`LIBRARY_DIRS := $(PYTHON_LIB) /usr/local/lib /usr/lib /usr/lib/x86_64-linux-gnu /usr/lib/x86_64-linux-gnu/hdf5/serial`
+
+Fix the **HDF5 library** before advancing with the directions from there: https://github.com/BVLC/caffe/issues/4333
 
 ```bash
-python predict.py pascal_voc images/dog.jpg --gpu 0
+/usr/bin/ld: cannot find -lhdf5_hl
+/usr/bin/ld: cannot find -lhdf5
 ```
 
-### Train the network for our dataset
+Fix:
 
-Refer to the [document for training](docs/training.md). Now more Caffe fun to come, as we need to clone the forked Caffe of the dilation authors. Note, that we have double Caffe in the docker now hogging up space, and building with [cmake](http://caffe.berkeleyvision.org/installation.html) did not work so you need to modify the `Makefile.config` so that PYTHON_INCLUDE refers to the ANACONDA python located in `/root/anaconda2/`
+```bash
+find . -type f -exec sed -i -e 's^"hdf5.h"^"hdf5/serial/hdf5.h"^g' -e 's^"hdf5_hl.h"^"hdf5/serial/hdf5_hl.h"^g' '{}' \;
+cd /usr/lib/x86_64-linux-gnu
+ln -s libhdf5_serial.so.10.1.0 libhdf5.so
+ln -s libhdf5_serial_hl.so.10.0.2 libhdf5_hl.so 
+cd /home/caffe-dilation
+```
+
+And then problems with the OpenCV
+
+```bash
+Makefile:627: recipe for target 'build_master_release/tools/upgrade_net_proto_text.bin' failed
+make: *** [build_master_release/tools/upgrade_net_proto_text.bin] Error 1
+```
+
+And the fix is to [modify one line](https://github.com/BVLC/caffe/issues/4621) of `Makefile`
+
+```
+LIBRARIES += glog gflags protobuf boost_system boost_filesystem m hdf5_hl hdf5 \
+        opencv_core opencv_highgui opencv_imgproc opencv_imgcodecs
+```
+
+Finally the actual build should work:
 
 ```bash
 git clone https://github.com/fyu/caffe-dilation
@@ -78,6 +110,18 @@ make test
 make runtest
 ```
 
+## Usage
+
+Assuming that we have the functional Docker image now
+
+### Test that prediction works with the example image
+
+```bash
+python predict.py pascal_voc images/dog.jpg --gpu 0
+```
+
+### Training for new dataset
+
 1) Download the data (from temporary Dropbox path for example)
 
 ```bash
@@ -86,9 +130,9 @@ apt-get install p7zip-full
 7z x semanticSegmentationLabels.zip\?dl\=0 
 ```
 
-## Extra
+### Extra
 
-### Viewing images
+#### Viewing images
 
 Install `Feh` for example: https://feh.finalrewind.org/
 
