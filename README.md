@@ -169,6 +169,11 @@ Which originated from *gcc* version imcompatibilities, see [Hack CUDA to support
 CUSTOM_CXX := g++ -D_FORCE_INLINES
 ```
 
+### This did not solve all the problems still, glog?
+
+See [caffe build on ubuntu 15.10](https://groups.google.com/forum/#!searchin/caffe-users/15.10/caffe-users/a6TDx89IByY/6Po32WqzCwAJ)
+
+*Using "`apt remove lib[glog | gflags | protobuf]-dev`" to remove any error-related libs, then building them from source solved my problems!*?
 
 ### Finally the actual build should work:
 
