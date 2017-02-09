@@ -4,11 +4,11 @@
 
 Properties of dilated convolution are discussed in our [ICLR 2016 conference paper](http://arxiv.org/abs/1511.07122). This repository contains the network definitions and the trained models. You can use this code together with vanilla Caffe to segment images using the pre-trained models. If you want to train the models yourself, use our [Caffe fork](https://github.com/fyu/caffe-dilation) and please check out the [document for training](https://github.com/fyu/dilation/blob/master/docs/training.md).
 
-# CUBICASA Instructions
+# Instructions for Dockerized fork
 
 Installation of Caffe can be very painful, so if you want to everything from scratch (or have to for some reason). Follow the instructions end of this README to get the prediction and training working.
 
-Otherwise just skip all this hassle, and get the readymade Docker image (**Recommended!!**=
+Otherwise just skip all this hassle, and get the readymade Docker image (**Recommended!**)
 
 
 ## Usage
