@@ -7,7 +7,8 @@
 1) start with the [Caffe Docker image](https://github.com/BVLC/caffe/tree/master/docker)
 
 ```bash
-nvidia-docker run -ti bvlc/caffe:gpu caffe
+nvidia-docker run -ti bvlc/caffe:gpu caffe bash
+apt-get update
 ```
 
 2) Install Anaconda 2.xx for the image (check the up-to-date [installer path](https://www.continuum.io/downloads))
@@ -47,6 +48,48 @@ Which can be again fixed with:
 
 ```bash
  conda install protobuf
+```
+
+## Usage
+
+### Test that prediction works with the example image
+
+```bash
+python predict.py pascal_voc images/dog.jpg --gpu 0
+```
+
+### Train the network for our dataset
+
+Refer to the [document for training](docs/training.md).
+
+1) Download the data (from temporary Dropbox path for example)
+
+```bash
+mkdir trainData && cd trainData && wget https://www.dropbox.com/s/nd6hjc61h5jujsw/semanticSegmentationLabels.zip?dl=0
+apt-get install p7zip-full
+7z x semanticSegmentationLabels.zip\?dl\=0 
+```
+
+
+## Extra
+
+### Viewing images on bash
+
+Install `Feh` for example: https://feh.finalrewind.org/
+
+```bash
+apt-get install libcurl4-openssl-dev libx11-dev libxt-dev libimlib2-dev libxinerama-dev libjpeg-progs
+git clone git://git.finalrewind.org/feh || git clone git://github.com/derf/feh.git
+cd feh
+make
+make install
+```
+
+And then viewing attempt still fails as X Server is not running for the Docker image
+
+```bash
+feh images/example_pascal_voc.jpg 
+feh ERROR: Can't open X display. It *is* running, yeah?
 ```
 
 # Multi-Scale Context Aggregation by Dilated Convolutions
