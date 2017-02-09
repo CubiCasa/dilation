@@ -6,9 +6,53 @@ Properties of dilated convolution are discussed in our [ICLR 2016 conference pap
 
 # CUBICASA Instructions
 
-Installation of Caffe can be very painful, so if you want to everything from scratch (or have to for some reason). Follow the instructions to get the prediction and training working.
+Installation of Caffe can be very painful, so if you want to everything from scratch (or have to for some reason). Follow the instructions end of this README to get the prediction and training working.
 
-Otherwise just skip all this hassle, and get the readymade Docker image.
+Otherwise just skip all this hassle, and get the readymade Docker image (**Recommended!!**=
+
+
+## Usage
+
+Assuming that we have the functional Docker image now
+
+### Test that prediction works with the example image
+
+```bash
+python predict.py pascal_voc images/dog.jpg --gpu 0
+```
+
+### Training for new dataset
+
+1) Download the data (from temporary Dropbox path for example)
+
+```bash
+mkdir trainData && cd trainData && wget https://www.dropbox.com/s/nd6hjc61h5jujsw/semanticSegmentationLabels.zip?dl=0
+apt-get install p7zip-full
+7z x semanticSegmentationLabels.zip\?dl\=0 
+```
+
+### Extra
+
+#### Viewing images
+
+Install `Feh` for example: https://feh.finalrewind.org/
+
+```bash
+apt-get install libcurl4-openssl-dev libx11-dev libxt-dev libimlib2-dev libxinerama-dev libjpeg-progs
+git clone git://git.finalrewind.org/feh || git clone git://github.com/derf/feh.git
+cd feh
+make
+make install
+```
+
+And then viewing attempt still fails as X Server is not running for the Docker image
+
+```bash
+feh images/example_pascal_voc.jpg 
+feh ERROR: Can't open X display. It *is* running, yeah?
+```
+
+## Installation
 
 ## Installation for the prediction
 
@@ -136,46 +180,5 @@ cp Makefile.config.example Makefile.config && nano Makefile.config
 make all
 make test
 make runtest
-```
-
-## Usage
-
-Assuming that we have the functional Docker image now
-
-### Test that prediction works with the example image
-
-```bash
-python predict.py pascal_voc images/dog.jpg --gpu 0
-```
-
-### Training for new dataset
-
-1) Download the data (from temporary Dropbox path for example)
-
-```bash
-mkdir trainData && cd trainData && wget https://www.dropbox.com/s/nd6hjc61h5jujsw/semanticSegmentationLabels.zip?dl=0
-apt-get install p7zip-full
-7z x semanticSegmentationLabels.zip\?dl\=0 
-```
-
-### Extra
-
-#### Viewing images
-
-Install `Feh` for example: https://feh.finalrewind.org/
-
-```bash
-apt-get install libcurl4-openssl-dev libx11-dev libxt-dev libimlib2-dev libxinerama-dev libjpeg-progs
-git clone git://git.finalrewind.org/feh || git clone git://github.com/derf/feh.git
-cd feh
-make
-make install
-```
-
-And then viewing attempt still fails as X Server is not running for the Docker image
-
-```bash
-feh images/example_pascal_voc.jpg 
-feh ERROR: Can't open X display. It *is* running, yeah?
 ```
 
