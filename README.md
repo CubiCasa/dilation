@@ -67,7 +67,9 @@ Refer to the [document for training](docs/training.md). Now more Caffe fun to co
 `INCLUDE_DIRS := $(PYTHON_INCLUDE) /usr/local/include /usr/include/hdf5/serial`
 `LIBRARY_DIRS := $(PYTHON_LIB) /usr/local/lib /usr/lib /usr/lib/x86_64-linux-gnu /usr/lib/x86_64-linux-gnu/hdf5/serial`
 
-Fix the **HDF5 library** before advancing with the directions from there: https://github.com/BVLC/caffe/issues/4333
+### Fix the **HDF5 library** 
+
+before advancing with the directions from there: https://github.com/BVLC/caffe/issues/4333
 
 ```bash
 /usr/bin/ld: cannot find -lhdf5_hl
@@ -84,7 +86,7 @@ ln -s libhdf5_serial_hl.so.10.0.2 libhdf5_hl.so
 cd /home/caffe-dilation
 ```
 
-And then problems with the OpenCV
+### And then problems with the OpenCV
 
 ```bash
 Makefile:627: recipe for target 'build_master_release/tools/upgrade_net_proto_text.bin' failed
@@ -98,7 +100,33 @@ LIBRARIES += glog gflags protobuf boost_system boost_filesystem m hdf5_hl hdf5 \
         opencv_core opencv_highgui opencv_imgproc opencv_imgcodecs
 ```
 
-Finally the actual build should work:
+### Still the **png** is acting up
+
+```bash
+/root/anaconda2//lib/libopencv_imgcodecs.so: undefined reference to `png_write_end@PNG16_0'
+```
+
+Fix by 
+```bash
+cd /usr/lib/x86_64-linux-gnu
+ln -s /root/anaconda2/lib/libpng16.so.16 libpng16.so.16
+ldconfig
+```
+
+### Still getting a bunch of protobuf errors
+
+```bash
+build_master_release/lib/libcaffe.so: undefined reference to `google::protobuf::
+```
+
+Which originated from *gcc* version imcompatibilities, see [Hack CUDA to support GCC 5](https://gist.github.com/wangruohui/679b05fcd1466bb0937f) in some older documentation, but now actually CUDA 8.0 already support higher **gcc versions**, and the actual fix was to hack the `Makefile.config` (as found [from here](https://gist.github.com/wangruohui/679b05fcd1466bb0937f))
+
+```
+CUSTOM_CXX := g++ -D_FORCE_INLINES
+```
+
+
+### Finally the actual build should work:
 
 ```bash
 git clone https://github.com/fyu/caffe-dilation
