@@ -177,6 +177,27 @@ See [caffe build on ubuntu 15.10](https://groups.google.com/forum/#!searchin/caf
 
 ### Finally the actual build should work:
 
+#### CCmake
+
+```bash
+apt-get install cmake-curses-gui
+```
+
+This approach [does not work either](https://github.com/BVLC/caffe/issues/3046)
+
+ samarth-robo commented 15 days ago
+ For anyone using Ubuntu 16.04 + Anaconda + Caffe, I was able to compile caffe without deleting Anaconda libs/files:
+
+ Remove all references to Anaconda in system path variables
+ run ccmake .. in caffe/build
+ hit t to toggle into advanced cmake mode where more variables are displayed
+ hit c couple of times to configure all library locations to system libraries
+ manually point PYTHON_EXECUTABLE to anaconda2/bin/python2.7, PYTHON_INCLUDE_DIR to anaconda2/include/python2.7 and PYTHON_LIBRARY to anaconda2/lib/libpython2.7.so
+ hit c again and then g to generate cmake files
+ make all -j8
+ Remember to prepend anaconda2/bin 
+
+#### Makefile.config
 ```bash
 git clone https://github.com/fyu/caffe-dilation
 cd caffe-dilation
